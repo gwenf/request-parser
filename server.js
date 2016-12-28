@@ -1,15 +1,11 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var app = express();
 
-var os = require('os');
-
 app.get('*', function(req,res){
-    var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
     var returnObj = {
-      "ipaddress": ip,
+      "ipaddress": req.header('x-forwarded-for') || req.connection.remoteAddress,
       "language": req.headers["accept-language"].split(',')[0],
-      "Software": os.platform() + '; ' + os.hostname()
+      "software": req.headers['user-agent'].split(') ')[0].split(' (')[1]
     }
     res.send(returnObj);
 });
@@ -17,4 +13,4 @@ app.get('*', function(req,res){
 var port = process.env.PORT || 8080;
 
 app.listen(port);
-console.log("Express listening on port: ", port)
+// console.log("Express listening on port: ", port)
